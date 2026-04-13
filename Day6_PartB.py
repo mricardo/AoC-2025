@@ -1,34 +1,31 @@
-
-import re
 from itertools import zip_longest
-with open("Day6_Input.txt", "r") as file:
-    data = file.read().strip()
 
-problems = [list(line) for line in data.strip().splitlines()]
-problems = [list(col) for col in zip_longest(*problems, fillvalue=' ')]
+with open("Day6_Input.txt") as file:
+    lines = file.read().splitlines()
 
 total = subtotal = 0
+operator = None
 
-for problem in problems:
-    number = None
-    if problem[-1] != ' ':
-        operator = problem[-1]
-        number = ''.join(problem[:-1]).strip()
-    else:
-        number = ''.join(problem).strip()
+for col in zip_longest(*lines, fillvalue=' '):
+    col_str = ''.join(col)
     
-    if len(number) == 0:
+    if col_str[-1] != ' ':
+        operator = col_str[-1]
+        number_str = col_str[:-1].strip()
+    else:
+        number_str = col_str.strip()
+    
+    if not number_str:
         total += subtotal
         subtotal = 0
         continue 
 
-    if operator == '+':
-        subtotal += int(number)
-    elif operator == '*':
-        if subtotal == 0:
-            subtotal = 1
-        subtotal *= int(number) 
+    value = int(number_str)
 
-#11643736116335
+    if operator == '+':
+        subtotal += value
+    elif operator == '*':
+        subtotal = (subtotal or 1) * value 
+
 total += subtotal
 print(total)
